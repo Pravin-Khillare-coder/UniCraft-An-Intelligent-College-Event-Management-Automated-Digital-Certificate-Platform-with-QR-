@@ -1,0 +1,18 @@
+# MS Office temporary files
+~$*.docx
+~$*.xlsx
+~$*.pptx
+
+# Dependencies & Build output
+node_modules/
+dist/
+build/
+
+# Environment variables
+.env
+.env.local
+*.env
+
+# OS metadata
+.DS_Store
+Thumbs.db
