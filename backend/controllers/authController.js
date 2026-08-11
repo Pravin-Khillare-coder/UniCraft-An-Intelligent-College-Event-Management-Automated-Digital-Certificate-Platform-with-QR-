@@ -173,21 +173,31 @@ exports.updateProfile = async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    if (name !== undefined && name !== '') user.name = name;
-    if (department !== undefined) user.profile.department = department;
-    if (rollNumber !== undefined) user.profile.rollNumber = rollNumber;
-    if (phone !== undefined) user.profile.phone = phone;
-    if (avatar !== undefined && avatar !== '') user.profile.avatar = avatar;
+    const currentProfile = user.profile || {};
+    const updatedProfile = {
+      department: department !== undefined ? department : (currentProfile.department || ''),
+      rollNumber: rollNumber !== undefined ? rollNumber : (currentProfile.rollNumber || ''),
+      phone: phone !== undefined ? phone : (currentProfile.phone || ''),
+      avatar: avatar !== undefined && avatar !== '' ? avatar : (currentProfile.avatar || '')
+    };
 
-    await user.save();
+    const updateData = {
+      profile: updatedProfile
+    };
+
+    if (name !== undefined && name !== '') {
+      updateData.name = name;
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(req.user.id, updateData, { new: true });
     
     res.json({
-      id: user._id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-      profile: user.profile,
-      badges: user.badges
+      id: updatedUser._id || req.user.id,
+      name: updatedUser.name || user.name,
+      email: updatedUser.email || user.email,
+      role: updatedUser.role || user.role,
+      profile: updatedUser.profile || updatedProfile,
+      badges: updatedUser.badges || user.badges || []
     });
   } catch (error) {
     console.error('Update profile error:', error);
