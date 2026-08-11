@@ -33,8 +33,12 @@ app.get('/', (req, res) => {
   res.json({ message: 'Welcome to the College Event Management API' });
 });
 
-// Start Server
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-  console.log(`Fallback mock database status: ${process.env.USE_MOCK_DB === 'true' ? 'ACTIVE' : 'INACTIVE'}`);
-});
+// Start Server if called directly
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+    console.log(`Fallback mock database status: ${process.env.USE_MOCK_DB === 'true' ? 'ACTIVE' : 'INACTIVE'}`);
+  });
+}
+
+module.exports = app;
