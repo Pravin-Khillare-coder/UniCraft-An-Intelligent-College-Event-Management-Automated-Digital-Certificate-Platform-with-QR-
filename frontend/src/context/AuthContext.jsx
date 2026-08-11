@@ -106,12 +106,20 @@ const fetchCloudProfiles = async () => {
 const saveCloudProfile = async (userObj) => {
   if (!userObj || !userObj.email) return;
   try {
-    const currentUsers = await fetchCloudProfiles();
     const emailKey = userObj.email.toLowerCase();
-    currentUsers[emailKey] = {
-      ...currentUsers[emailKey],
-      ...userObj
+    const currentUsers = await fetchCloudProfiles();
+    const existing = currentUsers[emailKey] || {};
+
+    const merged = {
+      ...existing,
+      ...userObj,
+      profile: {
+        ...(existing.profile || {}),
+        ...(userObj.profile || {})
+      }
     };
+
+    currentUsers[emailKey] = merged;
     await fetch(GLOBAL_CLOUD_DB_URL, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
@@ -136,11 +144,23 @@ const getPersistentProfiles = () => {
 const savePersistentProfile = (userObj) => {
   if (!userObj || !userObj.email) return;
   try {
+    const emailKey = userObj.email.toLowerCase();
     const profiles = getPersistentProfiles();
-    profiles[userObj.email.toLowerCase()] = userObj;
+    const existing = profiles[emailKey] || {};
+
+    const merged = {
+      ...existing,
+      ...userObj,
+      profile: {
+        ...(existing.profile || {}),
+        ...(userObj.profile || {})
+      }
+    };
+
+    profiles[emailKey] = merged;
     localStorage.setItem('app_user_profiles', JSON.stringify(profiles));
     // Asynchronously sync to global cloud database for cross-device visibility!
-    saveCloudProfile(userObj);
+    saveCloudProfile(merged);
   } catch (e) {
     console.error('Error saving persistent profile:', e);
   }
@@ -176,40 +196,67 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const loadUser = async () => {
       if (token) {
+        // Fast path for mock static tokens
+        const cachedMock = localStorage.getItem('mockUser');
+        if (token.startsWith('mock_jwt_token_') && cachedMock) {
+          try {
+            const parsed = JSON.parse(cachedMock);
+            const cloudProfiles = await fetchCloudProfiles();
+            const persistentProfiles = getPersistentProfiles();
+            const savedProfile = cloudProfiles[parsed.email?.toLowerCase()] || persistentProfiles[parsed.email?.toLowerCase()];
+            const merged = savedProfile ? {
+              ...parsed,
+              ...savedProfile,
+              profile: {
+                ...(parsed.profile || {}),
+                ...(savedProfile.profile || {})
+              }
+            } : parsed;
+
+            setUser(merged);
+            setLoading(false);
+            return;
+          } catch (e) {
+            console.error('Error parsing mockUser:', e);
+          }
+        }
+
         try {
           const res = await axios.get('/auth/me');
-          setUser(res.data);
           if (res.data) {
-            savePersistentProfile(res.data);
-          }
-          
-          try {
-            const certsRes = await axios.get('/certificates/my');
-            if (certsRes.data.length > 0) {
-              setNotifications(prev => [
-                { id: Date.now(), message: `New certificate issued for: ${certsRes.data[0].eventId?.title || 'AI/ML Workshop'}. Download it now!`, read: false, time: '1 hour ago' },
-                ...prev
-              ]);
-            }
-          } catch (err) {
-            console.log('Error pre-fetching notifications details');
+            const cleanEmail = res.data.email?.toLowerCase();
+            const persistentProfiles = getPersistentProfiles();
+            const savedProfile = persistentProfiles[cleanEmail];
+            const merged = savedProfile ? {
+              ...res.data,
+              ...savedProfile,
+              profile: {
+                ...(res.data.profile || {}),
+                ...(savedProfile.profile || {})
+              }
+            } : res.data;
+
+            setUser(merged);
           }
         } catch (error) {
           console.error('Error loading user profile:', error);
-          if (!error.response) {
-            // Server offline / network error fallback: load mockUser from localStorage & Cloud DB
-            const cachedMock = localStorage.getItem('mockUser');
-            if (cachedMock) {
-              try {
-                const parsed = JSON.parse(cachedMock);
-                const cloudProfiles = await fetchCloudProfiles();
-                const persistentProfiles = getPersistentProfiles();
-                const savedProfile = cloudProfiles[parsed.email?.toLowerCase()] || persistentProfiles[parsed.email?.toLowerCase()];
-                setUser(savedProfile || parsed);
-              } catch (e) {
-                logout();
-              }
-            } else {
+          if (cachedMock) {
+            try {
+              const parsed = JSON.parse(cachedMock);
+              const cloudProfiles = await fetchCloudProfiles();
+              const persistentProfiles = getPersistentProfiles();
+              const savedProfile = cloudProfiles[parsed.email?.toLowerCase()] || persistentProfiles[parsed.email?.toLowerCase()];
+              const merged = savedProfile ? {
+                ...parsed,
+                ...savedProfile,
+                profile: {
+                  ...(parsed.profile || {}),
+                  ...(savedProfile.profile || {})
+                }
+              } : parsed;
+
+              setUser(merged);
+            } catch (e) {
               logout();
             }
           } else {
@@ -229,10 +276,20 @@ export const AuthProvider = ({ children }) => {
       const res = await axios.post('/auth/login', { email, password });
       localStorage.setItem('token', res.data.token);
       setToken(res.data.token);
-      setUser(res.data.user);
-      if (res.data.user) {
-        savePersistentProfile(res.data.user);
-      }
+      
+      const cleanEmail = (email || '').trim().toLowerCase();
+      const persistentProfiles = getPersistentProfiles();
+      const savedProfileUser = persistentProfiles[cleanEmail];
+      const mergedUser = savedProfileUser ? {
+        ...res.data.user,
+        ...savedProfileUser,
+        profile: {
+          ...(res.data.user?.profile || {}),
+          ...(savedProfileUser.profile || {})
+        }
+      } : res.data.user;
+
+      setUser(mergedUser);
       return { success: true };
     } catch (error) {
       console.error('Login error:', error);
@@ -272,7 +329,6 @@ export const AuthProvider = ({ children }) => {
 
         localStorage.setItem('token', mockToken);
         localStorage.setItem('mockUser', JSON.stringify(userObj));
-        savePersistentProfile(userObj);
         setToken(mockToken);
         setUser(userObj);
         return { success: true };
