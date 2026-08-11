@@ -4,8 +4,10 @@
   "description": "Backend for College Event Management System",
   "main": "server.js",
   "type": "commonjs",
+  "license": "MIT",
   "scripts": {
     "start": "node server.js",
+    "build": "npm install",
     "dev": "nodemon server.js",
     "seed": "node seed.js"
   },
