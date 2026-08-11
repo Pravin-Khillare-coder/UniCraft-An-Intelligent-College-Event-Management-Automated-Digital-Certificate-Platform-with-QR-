@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { KeyRound, Mail, User, ShieldCheck, ArrowRight, UserPlus, Info } from 'lucide-react';
+import { KeyRound, Mail, User, ShieldCheck, ArrowRight, UserPlus } from 'lucide-react';
 
 const Login = () => {
   const { login, signup, googleLogin } = useAuth();
@@ -85,19 +85,6 @@ const Login = () => {
     }
   };
 
-  const autofillUser = (type) => {
-    setErrorMsg('');
-    if (type === 'admin') {
-      setEmail('admin@college.edu');
-      setPassword('admin123');
-      setRole('admin');
-    } else {
-      setEmail('rachana.j@example.com');
-      setPassword('student123');
-      setRole('student');
-    }
-  };
-
   return (
     <div className="min-h-screen bg-slate-50 flex font-sans">
       {/* Left Banner */}
@@ -150,30 +137,7 @@ const Login = () => {
             </p>
           </div>
 
-          {/* Quick autofill helper */}
-          {isLogin && (
-            <div className="bg-primary/5 border border-primary/20 rounded-2xl p-4 flex flex-col gap-2">
-              <span className="text-xs font-bold text-primary flex items-center gap-1.5">
-                <Info className="w-3.5 h-3.5" /> Demo Accounts Auto-fill
-              </span>
-              <div className="flex gap-2">
-                <button
-                  type="button"
-                  onClick={() => autofillUser('student')}
-                  className="flex-1 bg-white border border-slate-200 text-slate-600 font-semibold text-xs px-2.5 py-1.5 rounded-xl hover:bg-slate-50 transition-colors shadow-sm"
-                >
-                  Student Account
-                </button>
-                <button
-                  type="button"
-                  onClick={() => autofillUser('admin')}
-                  className="flex-1 bg-white border border-slate-200 text-slate-600 font-semibold text-xs px-2.5 py-1.5 rounded-xl hover:bg-slate-50 transition-colors shadow-sm"
-                >
-                  Admin Account
-                </button>
-              </div>
-            </div>
-          )}
+
 
           {/* Error Banner */}
           {errorMsg && (
