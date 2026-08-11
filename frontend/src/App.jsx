@@ -68,7 +68,7 @@ const RootRedirect = () => {
 function App() {
   return (
     <AuthProvider>
-      <BrowserRouter>
+      <BrowserRouter basename={import.meta.env.BASE_URL || '/'}>
         <Routes>
           {/* Public Authentication & Verification routes */}
           <Route path="/login" element={<Login />} />

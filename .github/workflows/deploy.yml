@@ -48,6 +48,10 @@ jobs:
           cd frontend
           npm run build
 
+      - name: Copy index.html to 404.html for GitHub Pages SPA Routing
+        run: |
+          cp ./frontend/dist/index.html ./frontend/dist/404.html
+
       - name: Verify Backend Dependencies
         run: |
           cd backend
