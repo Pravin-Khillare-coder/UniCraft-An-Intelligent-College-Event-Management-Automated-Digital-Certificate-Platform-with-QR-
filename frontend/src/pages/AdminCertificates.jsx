@@ -363,7 +363,7 @@ const AdminCertificates = () => {
   };
 
   return (
-    <div className="p-8 space-y-6 font-sans">
+    <div className="space-y-6 font-sans">
       {/* Header & Tab navigation switcher */}
       <div className="flex flex-col md:flex-row gap-4 justify-between items-start md:items-center border-b border-slate-100 pb-4">
         <div>

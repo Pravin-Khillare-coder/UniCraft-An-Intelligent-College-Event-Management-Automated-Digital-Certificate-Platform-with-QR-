@@ -164,9 +164,9 @@ const ManageEvents = () => {
   const categories = ['Hackathons', 'Workshops', 'Seminars', 'Technical', 'Cultural', 'Sports'];
 
   return (
-    <div className="p-8 space-y-6 font-sans">
+    <div className="space-y-6 font-sans">
       {/* Header section with add event button */}
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row gap-3 justify-between items-start sm:items-center">
         <div>
           <h3 className="font-bold text-slate-800 text-lg">Manage Events</h3>
           <p className="text-xs text-slate-400 font-medium">Add, update, publish, or delete event schedules.</p>

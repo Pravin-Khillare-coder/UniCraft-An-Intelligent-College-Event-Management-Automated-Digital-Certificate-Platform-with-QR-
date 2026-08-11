@@ -104,9 +104,9 @@ const Registrations = () => {
   };
 
   return (
-    <div className="p-8 space-y-6 font-sans">
+    <div className="space-y-6 font-sans">
       {/* Header filter selectors */}
-      <div className="flex flex-col sm:flex-row gap-4 items-center justify-between border-b border-slate-100 pb-4">
+      <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between border-b border-slate-100 pb-4">
         <div>
           <h3 className="font-bold text-slate-800 text-lg">Registrations Portal</h3>
           <p className="text-xs text-slate-400 font-medium">Verify student attendance list and issue participation credentials.</p>

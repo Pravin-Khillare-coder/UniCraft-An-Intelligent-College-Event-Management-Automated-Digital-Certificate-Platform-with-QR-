@@ -123,11 +123,11 @@ const Login = () => {
       </div>
 
       {/* Right Login Card */}
-      <div className="flex-1 flex items-center justify-center p-8 sm:p-12 md:p-20 overflow-y-auto">
-        <div className="w-full max-w-md space-y-8 animate-in fade-in slide-in-from-bottom-5 duration-300">
+      <div className="flex-1 flex items-center justify-center p-4 sm:p-10 md:p-16 overflow-y-auto">
+        <div className="w-full max-w-md space-y-6 sm:space-y-8 animate-in fade-in slide-in-from-bottom-5 duration-300">
           {/* Header */}
           <div className="text-center md:text-left">
-            <h3 className="text-3xl font-extrabold text-slate-800 tracking-tight">
+            <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-800 tracking-tight">
               {isLogin ? 'Sign In to Portal' : 'Create Student Account'}
             </h3>
             <p className="text-slate-400 text-sm mt-2 font-medium">
@@ -136,8 +136,6 @@ const Login = () => {
                 : 'Fill in your details below to register for college fests.'}
             </p>
           </div>
-
-
 
           {/* Error Banner */}
           {errorMsg && (
@@ -214,7 +212,7 @@ const Login = () => {
 
             {/* Student Additional Fields for Signup */}
             {!isLogin && (
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <input
                   type="text"
                   placeholder="Department (e.g. CSE)"

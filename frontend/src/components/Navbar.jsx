@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { Bell, Search, User, Check, Trash2 } from 'lucide-react';
+import { Bell, Search, User, Check, Trash2, Menu } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
 
-const Navbar = ({ searchPlaceholder, onSearchChange }) => {
+const Navbar = ({ searchPlaceholder, onSearchChange, onToggleSidebar }) => {
   const { user, notifications, markNotificationsAsRead, clearNotifications } = useAuth();
   const [showNotifDropdown, setShowNotifDropdown] = useState(false);
   const location = useLocation();
@@ -12,15 +12,15 @@ const Navbar = ({ searchPlaceholder, onSearchChange }) => {
   const getPageTitle = () => {
     const path = location.pathname;
     if (path.includes('admin-dashboard')) return 'Admin Dashboard';
-    if (path.includes('student-dashboard')) return 'Welcome back, ' + (user?.name || 'Student');
+    if (path.includes('student-dashboard')) return 'Welcome, ' + (user?.name?.split(' ')[0] || 'Student');
     if (path.includes('manage-events')) return 'Manage Events';
     if (path.includes('registrations')) return 'Registrations';
-    if (path.includes('events') && !path.includes('my-events')) return 'Events Page';
+    if (path.includes('events') && !path.includes('my-events')) return 'Explore Events';
     if (path.includes('my-events')) return 'My Registrations';
     if (path.includes('my-certificates')) return 'My Certificates';
     if (path.includes('certificates')) return 'Issued Certificates';
     if (path.includes('profile')) return 'User Profile';
-    if (path.includes('analytics')) return 'Analytics Reports';
+    if (path.includes('analytics')) return 'Analytics';
     if (path.includes('users')) return 'User Registry';
     if (path.includes('settings')) return 'Settings';
     return 'Portal';
@@ -29,14 +29,23 @@ const Navbar = ({ searchPlaceholder, onSearchChange }) => {
   const unreadCount = notifications.filter(n => !n.read).length;
 
   return (
-    <header className="h-20 bg-white border-b border-slate-100 flex items-center justify-between px-8 select-none shrink-0 z-20 sticky top-0 shadow-sm">
-      {/* Page Title */}
-      <div>
-        <h2 className="text-xl font-bold text-slate-800 tracking-tight">{getPageTitle()}</h2>
+    <header className="h-16 sm:h-20 bg-white border-b border-slate-100 flex items-center justify-between px-3 sm:px-6 lg:px-8 select-none shrink-0 z-20 sticky top-0 shadow-sm gap-2">
+      {/* Left Mobile Menu Toggle & Title */}
+      <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+        <button
+          onClick={onToggleSidebar}
+          className="lg:hidden p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-xl transition-colors focus:outline-none"
+          aria-label="Open Navigation Menu"
+        >
+          <Menu className="w-5 h-5 sm:w-6 sm:h-6" />
+        </button>
+        <h2 className="text-base sm:text-lg lg:text-xl font-bold text-slate-800 tracking-tight truncate max-w-[140px] sm:max-w-none">
+          {getPageTitle()}
+        </h2>
       </div>
 
       {/* Center Search bar (if handlers provided) */}
-      <div className="flex-1 max-w-md mx-8">
+      <div className="flex-1 max-w-xs sm:max-w-md mx-2 sm:mx-6 hidden sm:block">
         {onSearchChange && (
           <div className="relative">
             <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
@@ -53,12 +62,13 @@ const Navbar = ({ searchPlaceholder, onSearchChange }) => {
       </div>
 
       {/* Right User Actions */}
-      <div className="flex items-center gap-5">
+      <div className="flex items-center gap-2 sm:gap-4 shrink-0">
         {/* Notification Bell */}
         <div className="relative">
           <button
             onClick={() => setShowNotifDropdown(!showNotifDropdown)}
-            className="p-2.5 text-slate-500 hover:text-primary hover:bg-slate-50 rounded-xl transition-all duration-200 relative"
+            className="p-2 sm:p-2.5 text-slate-500 hover:text-primary hover:bg-slate-50 rounded-xl transition-all duration-200 relative"
+            aria-label="Notifications"
           >
             <Bell className="w-5 h-5" />
             {unreadCount > 0 && (
@@ -70,7 +80,7 @@ const Navbar = ({ searchPlaceholder, onSearchChange }) => {
 
           {/* Dropdown popup */}
           {showNotifDropdown && (
-            <div className="absolute right-0 mt-3 w-80 bg-white border border-slate-100 rounded-2xl shadow-xl py-2 z-50 text-slate-700 animate-in fade-in slide-in-from-top-3 duration-200">
+            <div className="absolute right-0 mt-3 w-72 sm:w-80 bg-white border border-slate-100 rounded-2xl shadow-xl py-2 z-50 text-slate-700 animate-in fade-in slide-in-from-top-3 duration-200">
               <div className="flex items-center justify-between px-4 py-2 border-b border-slate-100">
                 <span className="font-bold text-sm text-slate-800">Notifications</span>
                 <div className="flex gap-2">
@@ -112,13 +122,15 @@ const Navbar = ({ searchPlaceholder, onSearchChange }) => {
         </div>
 
         {/* Vertical Separator */}
-        <div className="h-8 w-[1px] bg-slate-200"></div>
+        <div className="h-6 sm:h-8 w-[1px] bg-slate-200"></div>
 
         {/* User context info */}
-        <div className="flex items-center gap-3">
-          <div className="text-right">
-            <h4 className="text-sm font-bold text-slate-800 tracking-tight leading-tight">{user?.name}</h4>
-            <span className="text-[11px] font-semibold text-slate-400 capitalize">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <div className="text-right hidden sm:block">
+            <h4 className="text-xs sm:text-sm font-bold text-slate-800 tracking-tight leading-tight truncate max-w-[120px] lg:max-w-none">
+              {user?.name}
+            </h4>
+            <span className="text-[10px] sm:text-[11px] font-semibold text-slate-400 capitalize">
               {user?.role === 'admin' ? 'Super Admin' : 'Student'}
             </span>
           </div>
@@ -126,11 +138,11 @@ const Navbar = ({ searchPlaceholder, onSearchChange }) => {
             <img
               src={user.profile.avatar}
               alt="Profile"
-              className="w-10 h-10 rounded-xl border border-slate-100 object-cover shadow-sm bg-slate-50"
+              className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl border border-slate-100 object-cover shadow-sm bg-slate-50"
             />
           ) : (
-            <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-500 font-bold border border-slate-200 shadow-sm">
-              <User className="w-5 h-5" />
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-500 font-bold border border-slate-200 shadow-sm">
+              <User className="w-4 h-4 sm:w-5 sm:h-5" />
             </div>
           )}
         </div>

@@ -118,9 +118,9 @@ const Events = () => {
   ];
 
   return (
-    <div className="p-8 space-y-6 font-sans">
+    <div className="space-y-6 font-sans">
       {/* Search & Filter Bar Section */}
-      <form onSubmit={handleSearchSubmit} className="bg-white border border-slate-100 p-5 rounded-2xl shadow-sm flex flex-col md:flex-row gap-4 items-center justify-between">
+      <form onSubmit={handleSearchSubmit} className="bg-white border border-slate-100 p-4 sm:p-5 rounded-2xl shadow-sm flex flex-col md:flex-row gap-4 items-center justify-between">
         
         {/* Search */}
         <div className="relative w-full md:w-80">
@@ -137,12 +137,12 @@ const Events = () => {
         </div>
 
         {/* Filters */}
-        <div className="flex flex-wrap gap-3 w-full md:w-auto items-center">
+        <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2.5 w-full md:w-auto items-center">
           {/* Category Dropdown */}
           <select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            className="px-4 py-2 border border-slate-200 bg-white rounded-xl text-xs font-semibold text-slate-600 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all cursor-pointer"
+            className="px-3 sm:px-4 py-2 border border-slate-200 bg-white rounded-xl text-xs font-semibold text-slate-600 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all cursor-pointer"
           >
             {categories.map(cat => (
               <option key={cat} value={cat}>{cat}</option>
@@ -153,30 +153,36 @@ const Events = () => {
           <select
             value={type}
             onChange={(e) => setType(e.target.value)}
-            className="px-4 py-2 border border-slate-200 bg-white rounded-xl text-xs font-semibold text-slate-600 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all cursor-pointer"
+            className="px-3 sm:px-4 py-2 border border-slate-200 bg-white rounded-xl text-xs font-semibold text-slate-600 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all cursor-pointer"
           >
             {types.map(t => (
               <option key={t} value={t}>{t}</option>
             ))}
           </select>
 
-          {/* Sorting Dropdown */}
+          {/* Sort By Dropdown */}
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
-            className="px-4 py-2 border border-slate-200 bg-white rounded-xl text-xs font-semibold text-slate-600 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all cursor-pointer"
+            className="col-span-2 sm:col-span-1 px-3 sm:px-4 py-2 border border-slate-200 bg-white rounded-xl text-xs font-semibold text-slate-600 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all cursor-pointer"
           >
-            {sortOptions.map(opt => (
-              <option key={opt} value={opt}>{opt}</option>
+            {sortOptions.map(sort => (
+              <option key={sort} value={sort}>{sort}</option>
             ))}
           </select>
 
-          {/* Search Action Button */}
+          {/* Reset Filters */}
           <button
-            type="submit"
-            className="px-6 py-2 bg-primary hover:bg-primary-hover text-white text-xs font-bold rounded-xl shadow-md shadow-indigo-600/10 hover:shadow-indigo-600/25 active:scale-95 transition-all duration-200"
+            type="button"
+            onClick={() => {
+              setCategory('All Categories');
+              setType('All Types');
+              setSortBy('Upcoming');
+              setSearchQuery('');
+            }}
+            className="col-span-2 sm:col-span-1 text-xs font-bold text-slate-400 hover:text-primary transition-colors py-1.5 px-2 text-center"
           >
-            Search
+            Reset
           </button>
         </div>
       </form>
@@ -194,7 +200,7 @@ const Events = () => {
           <span className="text-xs text-slate-400">Try adjusting your search criteria or filters.</span>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
           {events.map((event) => {
             const isRegistered = myRegistrations.includes(event._id);
             const isPast = new Date(event.date) < new Date();

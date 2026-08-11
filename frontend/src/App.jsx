@@ -42,12 +42,14 @@ const StudentRoute = () => {
 
 // Common Layout Structure
 const PortalLayout = () => {
+  const [sidebarOpen, setSidebarOpen] = React.useState(false);
+
   return (
-    <div className="flex bg-slate-50 min-h-screen">
-      <Sidebar />
-      <div className="flex-1 flex flex-col min-h-screen overflow-hidden">
-        <Navbar />
-        <main className="flex-1 overflow-y-auto bg-slate-50/50">
+    <div className="flex bg-slate-50 min-h-screen relative overflow-x-hidden">
+      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+      <div className="flex-1 flex flex-col min-h-screen min-w-0 overflow-hidden">
+        <Navbar onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
+        <main className="flex-1 overflow-y-auto bg-slate-50/50 p-3 sm:p-6 lg:p-8">
           <Outlet />
         </main>
       </div>

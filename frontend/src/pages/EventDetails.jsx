@@ -79,7 +79,7 @@ const EventDetails = () => {
   const isPast = new Date(event.date) < new Date();
 
   return (
-    <div className="p-8 space-y-6 max-w-5xl mx-auto font-sans">
+    <div className="space-y-6 max-w-5xl mx-auto font-sans">
       {/* Back to Events button */}
       <div>
         <Link to="/events" className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-primary transition-colors">

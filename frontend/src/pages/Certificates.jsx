@@ -44,7 +44,7 @@ const Certificates = () => {
   };
 
   return (
-    <div className="p-8 space-y-6 font-sans">
+    <div className="space-y-6 font-sans">
       {/* Header and Search */}
       <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
         <div>
@@ -80,7 +80,7 @@ const Certificates = () => {
           <span className="text-xs text-slate-400">Certificates are issued by the admin after attendance verification.</span>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
           {filteredCerts.map((cert, idx) => {
             const event = cert.eventId;
             if (!event) return null;

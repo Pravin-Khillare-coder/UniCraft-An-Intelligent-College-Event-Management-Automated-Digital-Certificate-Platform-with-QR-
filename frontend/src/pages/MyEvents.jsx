@@ -48,7 +48,7 @@ const MyEvents = () => {
   };
 
   return (
-    <div className="p-8 space-y-6 font-sans">
+    <div className="space-y-6 font-sans">
       {loading ? (
         <div className="flex flex-col items-center justify-center py-20 gap-3">
           <div className="w-8 h-8 border-4 border-primary/25 border-t-primary rounded-full animate-spin"></div>
@@ -64,7 +64,7 @@ const MyEvents = () => {
           </Link>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
           {registrations.map((reg) => {
             const event = reg.eventId;
             if (!event) return null;

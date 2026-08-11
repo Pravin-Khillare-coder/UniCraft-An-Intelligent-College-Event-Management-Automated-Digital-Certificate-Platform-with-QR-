@@ -50,7 +50,7 @@ const Profile = () => {
   const userBadges = badgesList.filter(b => user?.badges?.includes(b.name));
 
   return (
-    <div className="p-8 space-y-6 max-w-4xl mx-auto font-sans">
+    <div className="space-y-6 max-w-4xl mx-auto font-sans">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Left Column: Avatar & Quick Info */}
         <div className="bg-white border border-slate-100 p-6 rounded-3xl shadow-premium text-center flex flex-col items-center justify-between space-y-4">

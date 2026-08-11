@@ -126,7 +126,7 @@ const Dashboard = () => {
   if (user?.role === 'admin') {
     // ADMIN DASHBOARD VIEW
     return (
-      <div className="space-y-8 p-6 font-sans">
+      <div className="space-y-6 sm:space-y-8 font-sans">
         {/* Stat Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {[
@@ -229,15 +229,15 @@ const Dashboard = () => {
 
   // STUDENT DASHBOARD VIEW
   return (
-    <div className="space-y-8 p-6 font-sans">
+    <div className="space-y-6 sm:space-y-8 font-sans">
       {/* Welcome banner widget */}
-      <div className="bg-gradient-to-br from-primary to-indigo-600 rounded-3xl p-8 text-white relative overflow-hidden shadow-md">
+      <div className="bg-gradient-to-br from-primary to-indigo-600 rounded-3xl p-5 sm:p-8 text-white relative overflow-hidden shadow-md">
         <div className="absolute top-0 right-0 w-80 h-80 bg-white/5 rounded-full -mr-20 -mt-20 blur-2xl pointer-events-none"></div>
         <div className="relative z-10 max-w-xl space-y-3">
           <span className="bg-white/20 text-white font-bold text-[10px] uppercase tracking-widest px-3 py-1 rounded-full flex items-center gap-1.5 w-fit">
             <Sparkles className="w-3 h-3" /> Student Dashboard
           </span>
-          <h3 className="text-3xl font-extrabold tracking-tight">
+          <h3 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
             Unlock new opportunities today, {user?.name}!
           </h3>
           <p className="text-indigo-100 text-sm leading-relaxed">
