@@ -1,0 +1,98 @@
+[
+  {
+    "_id": "jpb2pb0lm",
+    "createdAt": "2026-07-26T10:56:00.958Z",
+    "name": "Admin User",
+    "email": "admin@college.edu",
+    "password": "$2a$10$2YFgVsYxf2z7OXTvDMJDz.tsWauaQDAU9BgstLOCIRP0apq6isodC",
+    "role": "admin",
+    "profile": {
+      "department": "Administration",
+      "rollNumber": "ADM-001",
+      "phone": "+15550100",
+      "avatar": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+    }
+  },
+  {
+    "_id": "9500su4st",
+    "createdAt": "2026-07-26T10:56:00.961Z",
+    "name": "Rachana Jambhalikar",
+    "email": "rachana.j@example.com",
+    "password": "$2a$10$N3A0KzG1g5n.kaslof6oRuHHBc9H.5hIeyM5B0L66b7g2ku/XEG0O",
+    "role": "student",
+    "profile": {
+      "department": "Computer Science",
+      "rollNumber": "CS-2023-042",
+      "phone": "+15550199",
+      "avatar": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+    },
+    "badges": [
+      "First Code",
+      "Event Explorer"
+    ],
+    "profile.department": "Computer Science",
+    "profile.rollNumber": "CS-2023-042",
+    "profile.phone": "+15550199",
+    "profile.avatar": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+    "updatedAt": "2026-08-04T09:56:25.873Z"
+  },
+  {
+    "_id": "bl61pkcf8",
+    "createdAt": "2026-07-26T10:56:00.963Z",
+    "name": "Aman Verma",
+    "email": "aman.v@example.com",
+    "password": "$2a$10$N3A0KzG1g5n.kaslof6oRuHHBc9H.5hIeyM5B0L66b7g2ku/XEG0O",
+    "role": "student",
+    "profile": {
+      "department": "Information Technology",
+      "rollNumber": "IT-2023-110",
+      "phone": "+15550188",
+      "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+    },
+    "badges": [
+      "Code Warrior"
+    ]
+  },
+  {
+    "_id": "oc7jbvd5u",
+    "createdAt": "2026-07-26T10:56:00.964Z",
+    "name": "Sneha Patel",
+    "email": "sneha.p@example.com",
+    "password": "$2a$10$N3A0KzG1g5n.kaslof6oRuHHBc9H.5hIeyM5B0L66b7g2ku/XEG0O",
+    "role": "student",
+    "profile": {
+      "department": "Computer Science",
+      "rollNumber": "CS-2023-089",
+      "phone": "+15550177",
+      "avatar": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+    }
+  },
+  {
+    "_id": "akvjh7x9v",
+    "createdAt": "2026-07-26T10:56:00.966Z",
+    "name": "Rohit Singh",
+    "email": "rohit.s@example.com",
+    "password": "$2a$10$N3A0KzG1g5n.kaslof6oRuHHBc9H.5hIeyM5B0L66b7g2ku/XEG0O",
+    "role": "student",
+    "profile": {
+      "department": "Electronics & Communication",
+      "rollNumber": "EC-2023-015",
+      "phone": "+15550166",
+      "avatar": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+    }
+  },
+  {
+    "_id": "bnb3uu4m6",
+    "createdAt": "2026-07-26T10:56:00.968Z",
+    "name": "Kavya Nair",
+    "email": "kavya.n@example.com",
+    "password": "$2a$10$N3A0KzG1g5n.kaslof6oRuHHBc9H.5hIeyM5B0L66b7g2ku/XEG0O",
+    "role": "student",
+    "profile": {
+      "department": "Information Technology",
+      "rollNumber": "IT-2023-007",
+      "phone": "+15550155",
+      "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+    }
+  }
+]

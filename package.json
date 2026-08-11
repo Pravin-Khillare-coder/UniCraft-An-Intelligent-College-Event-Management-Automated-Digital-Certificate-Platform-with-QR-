@@ -1,0 +1,13 @@
+{
+  "name": "college-event-management",
+  "version": "1.0.0",
+  "description": "College Event Management & Student Engagement Platform",
+  "scripts": {
+    "install-all": "npm run install-backend && npm run install-frontend",
+    "install-backend": "cd backend && npm install",
+    "install-frontend": "cd frontend && npm install --legacy-peer-deps",
+    "backend": "cd backend && npm run dev",
+    "frontend": "cd frontend && npm run dev",
+    "dev": "npx concurrently \"npm run backend\" \"npm run frontend\""
+  }
+}

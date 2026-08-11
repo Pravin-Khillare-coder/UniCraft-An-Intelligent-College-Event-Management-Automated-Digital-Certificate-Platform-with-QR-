@@ -1,0 +1,77 @@
+[
+  {
+    "_id": "3fphjc49j",
+    "createdAt": "2026-07-26T10:56:00.978Z",
+    "studentId": "9500su4st",
+    "eventId": "ly6qqs2p9",
+    "status": "Registered",
+    "attendance": "Present",
+    "registeredAt": "2026-07-21T10:56:00.977Z",
+    "updatedAt": "2026-08-04T10:49:58.425Z"
+  },
+  {
+    "_id": "f6j1nt790",
+    "createdAt": "2026-07-26T10:56:00.981Z",
+    "studentId": "bl61pkcf8",
+    "eventId": "ly6qqs2p9",
+    "status": "Registered",
+    "attendance": "Absent",
+    "registeredAt": "2026-07-21T10:56:00.980Z",
+    "updatedAt": "2026-07-26T10:57:39.960Z"
+  },
+  {
+    "_id": "sqg351l4h",
+    "createdAt": "2026-07-26T10:56:00.984Z",
+    "studentId": "oc7jbvd5u",
+    "eventId": "ly6qqs2p9",
+    "status": "Registered",
+    "attendance": "Absent",
+    "registeredAt": "2026-07-21T10:56:00.983Z",
+    "updatedAt": "2026-07-26T10:57:43.125Z"
+  },
+  {
+    "_id": "1722zl1uo",
+    "createdAt": "2026-07-26T10:56:00.987Z",
+    "studentId": "akvjh7x9v",
+    "eventId": "ly6qqs2p9",
+    "status": "Registered",
+    "attendance": "Absent",
+    "registeredAt": "2026-07-21T10:56:00.986Z"
+  },
+  {
+    "_id": "d9wkryhzd",
+    "createdAt": "2026-07-26T10:56:00.989Z",
+    "studentId": "bnb3uu4m6",
+    "eventId": "ly6qqs2p9",
+    "status": "Registered",
+    "attendance": "Pending",
+    "registeredAt": "2026-07-21T10:56:00.988Z"
+  },
+  {
+    "_id": "fsr7ea1je",
+    "createdAt": "2026-07-26T10:56:00.990Z",
+    "studentId": "9500su4st",
+    "eventId": "q7qjdmnak",
+    "status": "Registered",
+    "attendance": "Pending",
+    "registeredAt": "2026-07-24T10:56:00.989Z"
+  },
+  {
+    "_id": "8k5w9le42",
+    "createdAt": "2026-07-26T10:56:00.992Z",
+    "studentId": "bl61pkcf8",
+    "eventId": "q7qjdmnak",
+    "status": "Registered",
+    "attendance": "Pending",
+    "registeredAt": "2026-07-25T10:56:00.991Z"
+  },
+  {
+    "_id": "xj9e0j4d1",
+    "createdAt": "2026-07-26T10:56:00.993Z",
+    "studentId": "9500su4st",
+    "eventId": "wpi3y8vp8",
+    "status": "Registered",
+    "attendance": "Pending",
+    "registeredAt": "2026-07-26T10:56:00.992Z"
+  }
+]

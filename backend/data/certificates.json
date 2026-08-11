@@ -1,0 +1,29 @@
+[
+  {
+    "_id": "c869ss2ij",
+    "createdAt": "2026-07-26T10:56:00.982Z",
+    "certificateId": "CERT-20250524-0002",
+    "studentId": "bl61pkcf8",
+    "eventId": "ly6qqs2p9",
+    "issuedAt": "2026-07-26T10:56:00.981Z",
+    "verificationCode": "U7PGR5USN"
+  },
+  {
+    "_id": "csi0x8y3m",
+    "createdAt": "2026-07-26T10:56:00.986Z",
+    "certificateId": "CERT-20250524-0003",
+    "studentId": "oc7jbvd5u",
+    "eventId": "ly6qqs2p9",
+    "issuedAt": "2026-07-26T10:56:00.985Z",
+    "verificationCode": "FBXFD2ISE4D"
+  },
+  {
+    "_id": "85kqv2v7v",
+    "createdAt": "2026-08-04T10:58:50.639Z",
+    "certificateId": "CERT-2026-009",
+    "studentId": "9500su4st",
+    "eventId": "ly6qqs2p9",
+    "verificationCode": "2R62J7O6JF3",
+    "issuedAt": "2026-08-04T10:58:50.637Z"
+  }
+]

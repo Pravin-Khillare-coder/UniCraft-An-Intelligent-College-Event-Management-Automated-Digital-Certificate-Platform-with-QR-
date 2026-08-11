@@ -1,0 +1,61 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-slate-50 text-slate-800 font-sans antialiased;
+  }
+}
+
+/* Custom styles and smooth animations */
+.transition-all-300 {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Glassmorphism subtle shadows */
+.shadow-premium {
+  box-shadow: 0 4px 20px -2px rgba(15, 16, 22, 0.04), 0 2px 8px -1px rgba(15, 16, 22, 0.02);
+}
+
+.shadow-card-hover {
+  box-shadow: 0 12px 30px -4px rgba(90, 82, 229, 0.08), 0 4px 12px -2px rgba(90, 82, 229, 0.04);
+}
+
+/* Custom Scrollbar for sidebars and panels */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}
+
+/* Sidebar Specific Scrollbar */
+.sidebar-scroll::-webkit-scrollbar-thumb {
+  background: #2A2C3E;
+}
+.sidebar-scroll::-webkit-scrollbar-thumb:hover {
+  background: #3F425B;
+}
+
+/* Certificate Decorative Borders */
+.cert-border-gold {
+  border: 10px solid transparent;
+  border-image: linear-gradient(to bottom right, #D97706, #FBBF24, #F59E0B) 1;
+}
+
+.cert-border-purple {
+  border: 10px solid transparent;
+  border-image: linear-gradient(to bottom right, #5A52E5, #818CF8, #4F46E5) 1;
+}
