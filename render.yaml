@@ -3,7 +3,7 @@ services:
     name: unicraft-event-backend
     env: node
     buildCommand: npm install --prefix backend
-    startCommand: node backend/server.js
+    startCommand: node server.js
     envVars:
       - key: NODE_ENV
         value: production
