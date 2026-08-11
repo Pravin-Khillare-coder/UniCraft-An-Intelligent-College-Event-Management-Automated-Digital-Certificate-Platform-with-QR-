@@ -1,5 +1,7 @@
 # EventHub - College Event Management & Student Engagement Platform
 
+[![Deploy to Render](https://render.com/images/deploy-to-render.svg)](https://render.com/deploy?repo=https://github.com/Pravin-Khillare-coder/College-Event-management)
+
 EventHub is a modern, responsive full-stack web application designed for organizing, registering, and managing college events (such as hackathons, fests, seminars, and workshops). It features automatic PDF certificate generation with scannable verification QR codes and serial numbers.
 
 ## 🚀 Key Features
