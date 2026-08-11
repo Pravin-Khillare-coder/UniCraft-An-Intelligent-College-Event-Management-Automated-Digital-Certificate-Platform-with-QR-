@@ -1,32 +1,55 @@
 const fs = require('fs');
-  const path = require('path');
-  
-  const DATA_DIR = path.join(__dirname, '../data');
-  
+const path = require('path');
+
+let DATA_DIR = path.join(__dirname, '../data');
+
+try {
   if (!fs.existsSync(DATA_DIR)) {
     fs.mkdirSync(DATA_DIR, { recursive: true });
   }
-  
-  class LocalModel {
-    constructor(filename) {
-      this.filePath = path.join(DATA_DIR, filename);
-      if (!fs.existsSync(this.filePath)) {
-        fs.writeFileSync(this.filePath, JSON.stringify([]));
-      }
+} catch (e) {
+  DATA_DIR = '/tmp';
+}
+
+const memoryStore = {};
+
+class LocalModel {
+  constructor(filename) {
+    this.filename = filename;
+    this.filePath = path.join(DATA_DIR, filename);
+    if (!memoryStore[filename]) {
+      memoryStore[filename] = [];
     }
-  
-    read() {
-      try {
+    try {
+      if (fs.existsSync(this.filePath)) {
+        const content = fs.readFileSync(this.filePath, 'utf-8');
+        memoryStore[filename] = JSON.parse(content);
+      }
+    } catch (e) {
+      // In-memory fallback for read-only serverless environments
+    }
+  }
+
+  read() {
+    try {
+      if (fs.existsSync(this.filePath)) {
         const content = fs.readFileSync(this.filePath, 'utf-8');
         return JSON.parse(content);
-      } catch (err) {
-        return [];
       }
+    } catch (err) {
+      // Fallback
     }
-  
-    write(data) {
+    return memoryStore[this.filename] || [];
+  }
+
+  write(data) {
+    memoryStore[this.filename] = data;
+    try {
       fs.writeFileSync(this.filePath, JSON.stringify(data, null, 2));
+    } catch (err) {
+      // Safely ignore read-only filesystem errors in serverless functions
     }
+  }
   
     async find(query = {}) {
       const data = this.read();
