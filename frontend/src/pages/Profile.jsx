@@ -2,6 +2,45 @@ import React, { useState, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { User, Mail, Award, Edit, Check, ShieldCheck, Phone, GraduationCap, Upload, Camera } from 'lucide-react';
 
+const compressImage = (file, maxWidth = 250, maxHeight = 250, quality = 0.85) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (event) => {
+      const img = new Image();
+      img.src = event.target.result;
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > maxWidth) {
+            height = Math.round((height * maxWidth) / width);
+            width = maxWidth;
+          }
+        } else {
+          if (height > maxHeight) {
+            width = Math.round((width * maxHeight) / height);
+            height = maxHeight;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+
+        const compressedDataUrl = canvas.toDataURL('image/jpeg', quality);
+        resolve(compressedDataUrl);
+      };
+      img.onerror = (err) => reject(err);
+    };
+    reader.onerror = (err) => reject(err);
+  });
+};
+
 const Profile = () => {
   const { user, updateProfile } = useAuth();
   const fileInputRef = useRef(null);
@@ -17,38 +56,37 @@ const Profile = () => {
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
 
-  const handleFileUpload = (e) => {
+  const handleFileUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (file.size > 5 * 1024 * 1024) {
-      setErrorMsg('File size too large. Please select an image under 5MB.');
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onloadend = async () => {
-      const newAvatarData = reader.result;
-      setAvatar(newAvatarData);
-      setErrorMsg('');
+    try {
       setLoading(true);
+      setErrorMsg('');
+
+      // Compress photo for instant cross-device cloud synchronization
+      const compressedAvatarData = await compressImage(file, 250, 250, 0.85);
+      setAvatar(compressedAvatarData);
 
       const res = await updateProfile({
         name: name || user?.name,
-        department: dept || user?.profile?.department,
-        rollNumber: rollNo || user?.profile?.rollNumber,
-        phone: phone || user?.profile?.phone,
-        avatar: newAvatarData
+        department: dept !== undefined ? dept : user?.profile?.department,
+        rollNumber: rollNo !== undefined ? rollNo : user?.profile?.rollNumber,
+        phone: phone !== undefined ? phone : user?.profile?.phone,
+        avatar: compressedAvatarData
       });
 
       setLoading(false);
       if (res.success) {
-        setSuccessMsg('Profile picture updated and saved successfully.');
+        setSuccessMsg('Profile picture updated and saved across all devices.');
       } else {
         setErrorMsg(res.message);
       }
-    };
-    reader.readAsDataURL(file);
+    } catch (err) {
+      console.error('Image compression error:', err);
+      setErrorMsg('Error processing image file. Please try another photo.');
+      setLoading(false);
+    }
   };
 
   const handleSave = async (e) => {
