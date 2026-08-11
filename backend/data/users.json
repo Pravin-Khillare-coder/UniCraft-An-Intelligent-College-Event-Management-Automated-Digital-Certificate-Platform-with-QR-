@@ -3,7 +3,7 @@
     "_id": "jpb2pb0lm",
     "createdAt": "2026-07-26T10:56:00.958Z",
     "name": "Admin User",
-    "email": "admin@college.edu",
+    "email": "admin@gmail.com",
     "password": "$2a$10$2YFgVsYxf2z7OXTvDMJDz.tsWauaQDAU9BgstLOCIRP0apq6isodC",
     "role": "admin",
     "profile": {
@@ -17,7 +17,7 @@
     "_id": "9500su4st",
     "createdAt": "2026-07-26T10:56:00.961Z",
     "name": "Rachana Jambhalikar",
-    "email": "rachana.j@example.com",
+    "email": "rachana@gmail.com",
     "password": "$2a$10$N3A0KzG1g5n.kaslof6oRuHHBc9H.5hIeyM5B0L66b7g2ku/XEG0O",
     "role": "student",
     "profile": {

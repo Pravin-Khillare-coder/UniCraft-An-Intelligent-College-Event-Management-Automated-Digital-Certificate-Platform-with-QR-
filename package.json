@@ -8,8 +8,8 @@
     "install-frontend": "cd frontend && npm install --legacy-peer-deps",
     "build": "cd frontend && npm run build",
     "build:frontend": "cd frontend && npm run build",
-    "backend": "cd backend && npm run dev",
-    "frontend": "cd frontend && npm run dev",
+    "backend": "cd backend && npx nodemon server.js",
+    "frontend": "cd frontend && npx vite",
     "dev": "npx concurrently \"npm run backend\" \"npm run frontend\""
   }
 }

@@ -36,7 +36,7 @@ const seed = async () => {
   // 1. Create Users
   const admin = await User.create({
     name: 'Admin User',
-    email: 'admin@college.edu',
+    email: 'admin@gmail.com',
     password: adminPassword,
     role: 'admin',
     profile: {
@@ -49,7 +49,7 @@ const seed = async () => {
 
   const student1 = await User.create({
     name: 'Rachana Jambhulkar',
-    email: 'rachana.j@example.com',
+    email: 'rachana@gmail.com',
     password: studentPassword,
     role: 'student',
     profile: {
