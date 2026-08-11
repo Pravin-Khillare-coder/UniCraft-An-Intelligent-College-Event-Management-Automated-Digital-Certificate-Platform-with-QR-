@@ -88,6 +88,27 @@ const MOCK_USERS = [
   }
 ];
 
+// Persistent storage helpers for offline/static deployment mode
+const getPersistentProfiles = () => {
+  try {
+    const data = localStorage.getItem('app_user_profiles');
+    return data ? JSON.parse(data) : {};
+  } catch (e) {
+    return {};
+  }
+};
+
+const savePersistentProfile = (userObj) => {
+  if (!userObj || !userObj.email) return;
+  try {
+    const profiles = getPersistentProfiles();
+    profiles[userObj.email.toLowerCase()] = userObj;
+    localStorage.setItem('app_user_profiles', JSON.stringify(profiles));
+  } catch (e) {
+    console.error('Error saving persistent profile:', e);
+  }
+};
+
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(localStorage.getItem('token'));
@@ -121,6 +142,9 @@ export const AuthProvider = ({ children }) => {
         try {
           const res = await axios.get('/auth/me');
           setUser(res.data);
+          if (res.data) {
+            savePersistentProfile(res.data);
+          }
           
           try {
             const certsRes = await axios.get('/certificates/my');
@@ -140,7 +164,10 @@ export const AuthProvider = ({ children }) => {
             const cachedMock = localStorage.getItem('mockUser');
             if (cachedMock) {
               try {
-                setUser(JSON.parse(cachedMock));
+                const parsed = JSON.parse(cachedMock);
+                const persistentProfiles = getPersistentProfiles();
+                const savedProfile = persistentProfiles[parsed.email?.toLowerCase()];
+                setUser(savedProfile || parsed);
               } catch (e) {
                 logout();
               }
@@ -165,6 +192,9 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('token', res.data.token);
       setToken(res.data.token);
       setUser(res.data.user);
+      if (res.data.user) {
+        savePersistentProfile(res.data.user);
+      }
       return { success: true };
     } catch (error) {
       console.error('Login error:', error);
@@ -186,7 +216,11 @@ export const AuthProvider = ({ children }) => {
       const foundUser = allUsers.find(u => u.email.toLowerCase() === cleanEmail);
       if (foundUser && foundUser.password === password) {
         const mockToken = 'mock_jwt_token_' + foundUser._id;
-        const userObj = { ...foundUser };
+        
+        // Merge persistent saved profile changes across logins & logouts
+        const persistentProfiles = getPersistentProfiles();
+        const savedProfileUser = persistentProfiles[cleanEmail];
+        const userObj = savedProfileUser ? { ...savedProfileUser } : { ...foundUser };
         delete userObj.password;
 
         localStorage.setItem('token', mockToken);
@@ -212,6 +246,9 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('token', res.data.token);
       setToken(res.data.token);
       setUser(res.data.user);
+      if (res.data.user) {
+        savePersistentProfile(res.data.user);
+      }
       return { success: true };
     } catch (error) {
       console.error('Signup error:', error);
@@ -247,6 +284,7 @@ export const AuthProvider = ({ children }) => {
 
       localStorage.setItem('token', mockToken);
       localStorage.setItem('mockUser', JSON.stringify(userObj));
+      savePersistentProfile(userObj);
       setToken(mockToken);
       setUser(userObj);
       return { success: true };
@@ -262,6 +300,9 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('token', res.data.token);
       setToken(res.data.token);
       setUser(res.data.user);
+      if (res.data.user) {
+        savePersistentProfile(res.data.user);
+      }
       return { success: true };
     } catch (error) {
       console.error('Google login error:', error);
@@ -273,10 +314,14 @@ export const AuthProvider = ({ children }) => {
       }
 
       // Offline fallback Google Login for static hosting
-      const googleUser = {
+      const cleanEmail = (googleData.email || 'student.google@gmail.com').trim().toLowerCase();
+      const persistentProfiles = getPersistentProfiles();
+      const savedProfileUser = persistentProfiles[cleanEmail];
+
+      const googleUser = savedProfileUser || {
         _id: 'g_' + Date.now(),
         name: googleData.name || 'Google Student',
-        email: googleData.email || 'student.google@gmail.com',
+        email: cleanEmail,
         role: 'student',
         profile: {
           department: 'Computer Science',
@@ -287,6 +332,7 @@ export const AuthProvider = ({ children }) => {
       const mockToken = 'mock_jwt_token_' + googleUser._id;
       localStorage.setItem('token', mockToken);
       localStorage.setItem('mockUser', JSON.stringify(googleUser));
+      savePersistentProfile(googleUser);
       setToken(mockToken);
       setUser(googleUser);
       return { success: true };
@@ -301,6 +347,7 @@ export const AuthProvider = ({ children }) => {
       setUser(res.data);
       if (res.data) {
         localStorage.setItem('mockUser', JSON.stringify(res.data));
+        savePersistentProfile(res.data);
       }
       return { success: true };
     } catch (error) {
@@ -319,6 +366,7 @@ export const AuthProvider = ({ children }) => {
         };
         setUser(updated);
         localStorage.setItem('mockUser', JSON.stringify(updated));
+        savePersistentProfile(updated);
         return { success: true };
       }
       return {
