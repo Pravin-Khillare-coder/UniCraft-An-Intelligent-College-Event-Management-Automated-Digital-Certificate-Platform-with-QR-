@@ -51,6 +51,7 @@ jobs:
       - name: Copy index.html to 404.html for GitHub Pages SPA Routing
         run: |
           cp ./frontend/dist/index.html ./frontend/dist/404.html
+          touch ./frontend/dist/.nojekyll
 
       - name: Verify Backend Dependencies
         run: |
