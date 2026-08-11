@@ -88,6 +88,41 @@ const MOCK_USERS = [
   }
 ];
 
+// Global Shared Cloud Database for cross-device synchronization (GitHub Pages live demo)
+const GLOBAL_CLOUD_DB_URL = 'https://jsonblob.com/api/jsonBlob/019ff0ea-d1f0-725e-8e79-77293504a5dd';
+
+const fetchCloudProfiles = async () => {
+  try {
+    const res = await fetch(GLOBAL_CLOUD_DB_URL);
+    if (!res.ok) return {};
+    const data = await res.json();
+    return data.users || {};
+  } catch (e) {
+    console.error('Cloud DB fetch error:', e);
+    return {};
+  }
+};
+
+const saveCloudProfile = async (userObj) => {
+  if (!userObj || !userObj.email) return;
+  try {
+    const currentUsers = await fetchCloudProfiles();
+    const emailKey = userObj.email.toLowerCase();
+    currentUsers[emailKey] = {
+      ...currentUsers[emailKey],
+      ...userObj
+    };
+    await fetch(GLOBAL_CLOUD_DB_URL, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ users: currentUsers })
+    });
+    localStorage.setItem('app_user_profiles', JSON.stringify(currentUsers));
+  } catch (e) {
+    console.error('Cloud DB update error:', e);
+  }
+};
+
 // Persistent storage helpers for offline/static deployment mode
 const getPersistentProfiles = () => {
   try {
@@ -104,6 +139,8 @@ const savePersistentProfile = (userObj) => {
     const profiles = getPersistentProfiles();
     profiles[userObj.email.toLowerCase()] = userObj;
     localStorage.setItem('app_user_profiles', JSON.stringify(profiles));
+    // Asynchronously sync to global cloud database for cross-device visibility!
+    saveCloudProfile(userObj);
   } catch (e) {
     console.error('Error saving persistent profile:', e);
   }
@@ -160,13 +197,14 @@ export const AuthProvider = ({ children }) => {
         } catch (error) {
           console.error('Error loading user profile:', error);
           if (!error.response) {
-            // Server offline / network error fallback: load mockUser from localStorage
+            // Server offline / network error fallback: load mockUser from localStorage & Cloud DB
             const cachedMock = localStorage.getItem('mockUser');
             if (cachedMock) {
               try {
                 const parsed = JSON.parse(cachedMock);
+                const cloudProfiles = await fetchCloudProfiles();
                 const persistentProfiles = getPersistentProfiles();
-                const savedProfile = persistentProfiles[parsed.email?.toLowerCase()];
+                const savedProfile = cloudProfiles[parsed.email?.toLowerCase()] || persistentProfiles[parsed.email?.toLowerCase()];
                 setUser(savedProfile || parsed);
               } catch (e) {
                 logout();
@@ -217,9 +255,10 @@ export const AuthProvider = ({ children }) => {
       if (foundUser && foundUser.password === password) {
         const mockToken = 'mock_jwt_token_' + foundUser._id;
         
-        // Merge persistent saved profile changes across logins & logouts
+        // Merge persistent saved profile changes across all devices & logouts
+        const cloudProfiles = await fetchCloudProfiles();
         const persistentProfiles = getPersistentProfiles();
-        const savedProfileUser = persistentProfiles[cleanEmail];
+        const savedProfileUser = cloudProfiles[cleanEmail] || persistentProfiles[cleanEmail];
         const userObj = savedProfileUser ? { ...savedProfileUser } : { ...foundUser };
         delete userObj.password;
 
