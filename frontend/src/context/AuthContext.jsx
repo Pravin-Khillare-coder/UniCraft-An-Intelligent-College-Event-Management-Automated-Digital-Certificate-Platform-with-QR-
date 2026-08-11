@@ -299,18 +299,22 @@ export const AuthProvider = ({ children }) => {
     try {
       const res = await axios.put('/auth/profile', profileData);
       setUser(res.data);
+      if (res.data) {
+        localStorage.setItem('mockUser', JSON.stringify(res.data));
+      }
       return { success: true };
     } catch (error) {
       console.error('Update profile error:', error);
       if (!error.response && user) {
         const updated = {
           ...user,
-          name: profileData.name || user.name,
+          name: profileData.name !== undefined && profileData.name !== '' ? profileData.name : user.name,
           profile: {
             ...user.profile,
-            department: profileData.department || user.profile?.department,
-            rollNumber: profileData.rollNumber || user.profile?.rollNumber,
-            phone: profileData.phone || user.profile?.phone
+            department: profileData.department !== undefined ? profileData.department : user.profile?.department,
+            rollNumber: profileData.rollNumber !== undefined ? profileData.rollNumber : user.profile?.rollNumber,
+            phone: profileData.phone !== undefined ? profileData.phone : user.profile?.phone,
+            avatar: profileData.avatar !== undefined && profileData.avatar !== '' ? profileData.avatar : user.profile?.avatar
           }
         };
         setUser(updated);

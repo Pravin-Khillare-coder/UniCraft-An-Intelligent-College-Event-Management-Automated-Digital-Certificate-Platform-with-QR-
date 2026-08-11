@@ -168,23 +168,26 @@ exports.getMe = async (req, res) => {
 exports.updateProfile = async (req, res) => {
   try {
     const { name, department, rollNumber, phone, avatar } = req.body;
-    const update = {
-      name,
-      'profile.department': department,
-      'profile.rollNumber': rollNumber,
-      'profile.phone': phone,
-      'profile.avatar': avatar
-    };
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
 
-    const updatedUser = await User.findByIdAndUpdate(req.user.id, update, { new: true });
+    if (name !== undefined && name !== '') user.name = name;
+    if (department !== undefined) user.profile.department = department;
+    if (rollNumber !== undefined) user.profile.rollNumber = rollNumber;
+    if (phone !== undefined) user.profile.phone = phone;
+    if (avatar !== undefined && avatar !== '') user.profile.avatar = avatar;
+
+    await user.save();
     
     res.json({
-      id: updatedUser._id,
-      name: updatedUser.name,
-      email: updatedUser.email,
-      role: updatedUser.role,
-      profile: updatedUser.profile,
-      badges: updatedUser.badges
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      profile: user.profile,
+      badges: user.badges
     });
   } catch (error) {
     console.error('Update profile error:', error);

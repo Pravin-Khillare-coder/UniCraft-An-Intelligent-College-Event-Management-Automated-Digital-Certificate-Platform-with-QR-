@@ -27,9 +27,26 @@ const Profile = () => {
     }
 
     const reader = new FileReader();
-    reader.onloadend = () => {
-      setAvatar(reader.result);
+    reader.onloadend = async () => {
+      const newAvatarData = reader.result;
+      setAvatar(newAvatarData);
       setErrorMsg('');
+      setLoading(true);
+
+      const res = await updateProfile({
+        name: name || user?.name,
+        department: dept || user?.profile?.department,
+        rollNumber: rollNo || user?.profile?.rollNumber,
+        phone: phone || user?.profile?.phone,
+        avatar: newAvatarData
+      });
+
+      setLoading(false);
+      if (res.success) {
+        setSuccessMsg('Profile picture updated and saved successfully.');
+      } else {
+        setErrorMsg(res.message);
+      }
     };
     reader.readAsDataURL(file);
   };
