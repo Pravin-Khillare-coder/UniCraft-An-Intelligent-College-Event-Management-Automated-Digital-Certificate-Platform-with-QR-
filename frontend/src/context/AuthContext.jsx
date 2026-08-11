@@ -16,6 +16,78 @@ export const API_URL = getApiUrl();
 // Set up default axios base URL
 axios.defaults.baseURL = API_URL;
 
+// Initial mock user accounts for static deployments (GitHub Pages)
+const MOCK_USERS = [
+  {
+    _id: 'jpb2pb0lm',
+    name: 'Admin User',
+    email: 'admin@gmail.com',
+    password: 'admin123',
+    role: 'admin',
+    profile: {
+      department: 'Administration',
+      rollNumber: 'ADM-001',
+      phone: '+15550100',
+      avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
+    }
+  },
+  {
+    _id: 'jpb2pb0lm2',
+    name: 'Admin User',
+    email: 'admin@college.edu',
+    password: 'admin123',
+    role: 'admin',
+    profile: {
+      department: 'Administration',
+      rollNumber: 'ADM-001',
+      phone: '+15550100',
+      avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
+    }
+  },
+  {
+    _id: '9500su4st',
+    name: 'Rachana Jambhulkar',
+    email: 'rachana@gmail.com',
+    password: 'student123',
+    role: 'student',
+    profile: {
+      department: 'Computer Science',
+      rollNumber: 'CS-2023-042',
+      phone: '+15550199',
+      avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
+    },
+    badges: ['First Code', 'Event Explorer']
+  },
+  {
+    _id: '9500su4st2',
+    name: 'Rachana Jambhulkar',
+    email: 'rachana.j@example.com',
+    password: 'student123',
+    role: 'student',
+    profile: {
+      department: 'Computer Science',
+      rollNumber: 'CS-2023-042',
+      phone: '+15550199',
+      avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
+    },
+    badges: ['First Code', 'Event Explorer']
+  },
+  {
+    _id: 'bl61pkcf8',
+    name: 'Aman Verma',
+    email: 'aman.v@example.com',
+    password: 'student123',
+    role: 'student',
+    profile: {
+      department: 'Information Technology',
+      rollNumber: 'IT-2023-110',
+      phone: '+15550188',
+      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
+    },
+    badges: ['Code Warrior']
+  }
+];
+
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(localStorage.getItem('token'));
@@ -50,7 +122,6 @@ export const AuthProvider = ({ children }) => {
           const res = await axios.get('/auth/me');
           setUser(res.data);
           
-          // Seed notification check based on attendance/certificates
           try {
             const certsRes = await axios.get('/certificates/my');
             if (certsRes.data.length > 0) {
@@ -64,7 +135,21 @@ export const AuthProvider = ({ children }) => {
           }
         } catch (error) {
           console.error('Error loading user profile:', error);
-          logout();
+          if (!error.response) {
+            // Server offline / network error fallback: load mockUser from localStorage
+            const cachedMock = localStorage.getItem('mockUser');
+            if (cachedMock) {
+              try {
+                setUser(JSON.parse(cachedMock));
+              } catch (e) {
+                logout();
+              }
+            } else {
+              logout();
+            }
+          } else {
+            logout();
+          }
         }
       }
       setLoading(false);
@@ -83,9 +168,37 @@ export const AuthProvider = ({ children }) => {
       return { success: true };
     } catch (error) {
       console.error('Login error:', error);
+      
+      // If backend responded with 400/401 status, return error response message
+      if (error.response && error.response.status >= 400 && error.response.status < 500) {
+        return {
+          success: false,
+          message: error.response?.data?.message || 'Invalid email or password'
+        };
+      }
+
+      // Offline/network fallback for GitHub Pages live demo
+      const cleanEmail = (email || '').trim().toLowerCase();
+      const storedUsersJSON = localStorage.getItem('app_users');
+      const customUsers = storedUsersJSON ? JSON.parse(storedUsersJSON) : [];
+      const allUsers = [...MOCK_USERS, ...customUsers];
+
+      const foundUser = allUsers.find(u => u.email.toLowerCase() === cleanEmail);
+      if (foundUser && foundUser.password === password) {
+        const mockToken = 'mock_jwt_token_' + foundUser._id;
+        const userObj = { ...foundUser };
+        delete userObj.password;
+
+        localStorage.setItem('token', mockToken);
+        localStorage.setItem('mockUser', JSON.stringify(userObj));
+        setToken(mockToken);
+        setUser(userObj);
+        return { success: true };
+      }
+
       return {
         success: false,
-        message: error.response?.data?.message || 'Invalid email or password'
+        message: 'Invalid email or password'
       };
     } finally {
       setLoading(false);
@@ -102,10 +215,41 @@ export const AuthProvider = ({ children }) => {
       return { success: true };
     } catch (error) {
       console.error('Signup error:', error);
-      return {
-        success: false,
-        message: error.response?.data?.message || 'Error creating account. Try again.'
+      if (error.response && error.response.status >= 400 && error.response.status < 500) {
+        return {
+          success: false,
+          message: error.response?.data?.message || 'Error creating account. Try again.'
+        };
+      }
+
+      // Offline fallback signup for static hosting
+      const newUser = {
+        _id: 'user_' + Date.now(),
+        name: userData.name,
+        email: userData.email,
+        password: userData.password,
+        role: userData.role || 'student',
+        profile: {
+          department: userData.department || '',
+          rollNumber: userData.rollNumber || '',
+          phone: userData.phone || ''
+        }
       };
+
+      const storedUsersJSON = localStorage.getItem('app_users');
+      const customUsers = storedUsersJSON ? JSON.parse(storedUsersJSON) : [];
+      customUsers.push(newUser);
+      localStorage.setItem('app_users', JSON.stringify(customUsers));
+
+      const mockToken = 'mock_jwt_token_' + newUser._id;
+      const userObj = { ...newUser };
+      delete userObj.password;
+
+      localStorage.setItem('token', mockToken);
+      localStorage.setItem('mockUser', JSON.stringify(userObj));
+      setToken(mockToken);
+      setUser(userObj);
+      return { success: true };
     } finally {
       setLoading(false);
     }
@@ -121,10 +265,31 @@ export const AuthProvider = ({ children }) => {
       return { success: true };
     } catch (error) {
       console.error('Google login error:', error);
-      return {
-        success: false,
-        message: error.response?.data?.message || 'Google Auth failed'
+      if (error.response && error.response.status >= 400 && error.response.status < 500) {
+        return {
+          success: false,
+          message: error.response?.data?.message || 'Google Auth failed'
+        };
+      }
+
+      // Offline fallback Google Login for static hosting
+      const googleUser = {
+        _id: 'g_' + Date.now(),
+        name: googleData.name || 'Google Student',
+        email: googleData.email || 'student.google@gmail.com',
+        role: 'student',
+        profile: {
+          department: 'Computer Science',
+          avatar: googleData.avatar
+        }
       };
+
+      const mockToken = 'mock_jwt_token_' + googleUser._id;
+      localStorage.setItem('token', mockToken);
+      localStorage.setItem('mockUser', JSON.stringify(googleUser));
+      setToken(mockToken);
+      setUser(googleUser);
+      return { success: true };
     } finally {
       setLoading(false);
     }
@@ -137,6 +302,21 @@ export const AuthProvider = ({ children }) => {
       return { success: true };
     } catch (error) {
       console.error('Update profile error:', error);
+      if (!error.response && user) {
+        const updated = {
+          ...user,
+          name: profileData.name || user.name,
+          profile: {
+            ...user.profile,
+            department: profileData.department || user.profile?.department,
+            rollNumber: profileData.rollNumber || user.profile?.rollNumber,
+            phone: profileData.phone || user.profile?.phone
+          }
+        };
+        setUser(updated);
+        localStorage.setItem('mockUser', JSON.stringify(updated));
+        return { success: true };
+      }
       return {
         success: false,
         message: error.response?.data?.message || 'Error updating profile'
@@ -161,6 +341,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('mockUser');
     setToken(null);
     setUser(null);
   };
