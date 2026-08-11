@@ -6,6 +6,8 @@
     "install-all": "npm run install-backend && npm run install-frontend",
     "install-backend": "cd backend && npm install",
     "install-frontend": "cd frontend && npm install --legacy-peer-deps",
+    "build": "cd frontend && npm run build",
+    "build:frontend": "cd frontend && npm run build",
     "backend": "cd backend && npm run dev",
     "frontend": "cd frontend && npm run dev",
     "dev": "npx concurrently \"npm run backend\" \"npm run frontend\""
