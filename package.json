@@ -10,9 +10,9 @@
     "install-all": "npm run install-backend && npm run install-frontend",
     "install-backend": "cd backend && npm install",
     "install-frontend": "cd frontend && npm install --legacy-peer-deps",
-    "backend": "npx nodemon server.js",
-    "frontend": "cd frontend && npx vite",
-    "dev": "npx concurrently \"npm run backend\" \"npm run frontend\""
+    "backend": "node server.js",
+    "frontend": "cd frontend && npm run dev",
+    "dev": "node -e \"const { spawn } = require('child_process'); spawn('node', ['server.js'], { stdio: 'inherit', shell: true }); spawn('npm', ['run', 'dev'], { cwd: './frontend', stdio: 'inherit', shell: true });\""
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

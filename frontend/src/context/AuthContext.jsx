@@ -8,7 +8,10 @@ const getApiUrl = () => {
     return import.meta.env.VITE_API_URL;
   }
   const hostname = typeof window !== 'undefined' ? window.location.hostname : 'localhost';
-  return `http://${hostname}:5000/api`;
+  if (hostname === 'localhost' || hostname === '127.0.0.1') {
+    return `http://${hostname}:5000/api`;
+  }
+  return '/api';
 };
 
 export const API_URL = getApiUrl();

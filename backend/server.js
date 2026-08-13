@@ -29,8 +29,8 @@ app.use('/api/registrations', registrationRoutes);
 app.use('/api/certificates', certificateRoutes);
 
 // Simple Welcome Route
-app.get('/', (req, res) => {
-  res.json({ message: 'Welcome to the College Event Management API' });
+app.get(['/', '/api'], (req, res) => {
+  res.json({ message: 'Welcome to the College Event Management API', status: 'online' });
 });
 
 // Start Server if called directly
