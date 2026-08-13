@@ -17,28 +17,26 @@ class LocalModel {
   constructor(filename) {
     this.filename = filename;
     this.filePath = path.join(DATA_DIR, filename);
-    if (!memoryStore[filename]) {
-      memoryStore[filename] = [];
-    }
-    try {
-      if (fs.existsSync(this.filePath)) {
-        const content = fs.readFileSync(this.filePath, 'utf-8');
-        memoryStore[filename] = JSON.parse(content);
+    this.initStore();
+  }
+
+  initStore() {
+    if (memoryStore[this.filename] === undefined || memoryStore[this.filename] === null) {
+      try {
+        if (fs.existsSync(this.filePath)) {
+          const content = fs.readFileSync(this.filePath, 'utf-8');
+          memoryStore[this.filename] = JSON.parse(content);
+        } else {
+          memoryStore[this.filename] = [];
+        }
+      } catch (e) {
+        memoryStore[this.filename] = [];
       }
-    } catch (e) {
-      // In-memory fallback for read-only serverless environments
     }
   }
 
   read() {
-    try {
-      if (fs.existsSync(this.filePath)) {
-        const content = fs.readFileSync(this.filePath, 'utf-8');
-        return JSON.parse(content);
-      }
-    } catch (err) {
-      // Fallback
-    }
+    this.initStore();
     return memoryStore[this.filename] || [];
   }
 
@@ -47,7 +45,7 @@ class LocalModel {
     try {
       fs.writeFileSync(this.filePath, JSON.stringify(data, null, 2));
     } catch (err) {
-      // Safely ignore read-only filesystem errors in serverless functions
+      // In read-only serverless filesystems (e.g. Vercel), safely rely on in-memory store
     }
   }
   

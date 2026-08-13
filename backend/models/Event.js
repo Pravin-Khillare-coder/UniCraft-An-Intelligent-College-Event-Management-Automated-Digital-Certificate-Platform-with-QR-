@@ -29,7 +29,7 @@ const MongooseEvent = mongoose.models.Event || mongoose.model('Event', eventSche
 
 class DynamicEvent {
   get model() {
-    if (process.env.USE_MOCK_DB === 'true') {
+    if (process.env.USE_MOCK_DB === 'true' || !process.env.MONGODB_URI) {
       return new LocalModel('events.json');
     }
     return MongooseEvent;

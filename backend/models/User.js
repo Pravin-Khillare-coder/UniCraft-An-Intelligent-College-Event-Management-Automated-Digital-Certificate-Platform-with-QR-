@@ -21,7 +21,7 @@ const MongooseUser = mongoose.models.User || mongoose.model('User', userSchema);
 
 class DynamicUser {
   get model() {
-    if (process.env.USE_MOCK_DB === 'true') {
+    if (process.env.USE_MOCK_DB === 'true' || !process.env.MONGODB_URI) {
       return new LocalModel('users.json');
     }
     return MongooseUser;

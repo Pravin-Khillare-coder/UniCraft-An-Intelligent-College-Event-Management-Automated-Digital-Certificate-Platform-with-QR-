@@ -13,7 +13,7 @@ const MongooseRegistration = mongoose.models.Registration || mongoose.model('Reg
 
 class DynamicRegistration {
   get model() {
-    if (process.env.USE_MOCK_DB === 'true') {
+    if (process.env.USE_MOCK_DB === 'true' || !process.env.MONGODB_URI) {
       return new LocalModel('registrations.json');
     }
     return MongooseRegistration;

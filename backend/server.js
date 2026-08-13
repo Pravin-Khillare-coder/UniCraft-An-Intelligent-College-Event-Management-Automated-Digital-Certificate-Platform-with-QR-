@@ -23,14 +23,20 @@ const registrationRoutes = require('./routes/registrationRoutes');
 const certificateRoutes = require('./routes/certificateRoutes');
 
 // API Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/events', eventRoutes);
-app.use('/api/registrations', registrationRoutes);
-app.use('/api/certificates', certificateRoutes);
+app.use(['/api/auth', '/auth'], authRoutes);
+app.use(['/api/events', '/events'], eventRoutes);
+app.use(['/api/registrations', '/registrations'], registrationRoutes);
+app.use(['/api/certificates', '/certificates'], certificateRoutes);
 
 // Simple Welcome Route
 app.get(['/', '/api'], (req, res) => {
   res.json({ message: 'Welcome to the College Event Management API', status: 'online' });
+});
+
+// Global Error Handler for Serverless Functions
+app.use((err, req, res, next) => {
+  console.error('Unhandled serverless API error:', err);
+  res.status(500).json({ message: 'Internal Server Error', error: err.message || String(err) });
 });
 
 // Start Server if called directly
@@ -42,3 +48,4 @@ if (require.main === module) {
 }
 
 module.exports = app;
+
