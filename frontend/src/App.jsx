@@ -57,14 +57,9 @@ const PortalLayout = () => {
   );
 };
 
-// Root redirection controller
+// Root redirection controller - always redirect main link to /login
 const RootRedirect = () => {
-  const { user, loading } = useAuth();
-  if (loading) return <FullScreenLoader />;
-  if (!user) return <Navigate to="/login" replace />;
-  return user.role === 'admin' 
-    ? <Navigate to="/admin-dashboard" replace /> 
-    : <Navigate to="/student-dashboard" replace />;
+  return <Navigate to="/login" replace />;
 };
 
 function App() {
