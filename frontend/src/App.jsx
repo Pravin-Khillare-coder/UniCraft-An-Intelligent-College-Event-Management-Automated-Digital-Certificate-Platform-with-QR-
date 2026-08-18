@@ -57,8 +57,18 @@ const PortalLayout = () => {
   );
 };
 
-// Root redirection controller - always redirect main link to /login
+// Root redirection controller - forces clean start on /login
 const RootRedirect = () => {
+  const { logout } = useAuth();
+
+  React.useEffect(() => {
+    try {
+      localStorage.removeItem('token');
+      localStorage.removeItem('mockUser');
+      if (logout) logout();
+    } catch (e) {}
+  }, []);
+
   return <Navigate to="/login" replace />;
 };
 
@@ -104,7 +114,7 @@ function App() {
 
           {/* Root/Wildcard fallback handling */}
           <Route path="/" element={<RootRedirect />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
+          <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
       </Router>
     </AuthProvider>
