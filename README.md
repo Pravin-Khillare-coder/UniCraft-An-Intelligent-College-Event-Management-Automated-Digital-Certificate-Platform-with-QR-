@@ -1,8 +1,8 @@
 # EventHub - College Event Management & Student Engagement Platform
 
-🌐 **Live Active GitHub Link**: [https://Pravin-Khillare-coder.github.io/College-Event-management](https://Pravin-Khillare-coder.github.io/College-Event-management)
+🌐 **Live Active GitHub Link**: [https://Pravin-Khillare-coder.github.io/UniCraft-An-Intelligent-College-Event-Management-Automated-Digital-Certificate-Platform-with-QR-/](https://Pravin-Khillare-coder.github.io/UniCraft-An-Intelligent-College-Event-Management-Automated-Digital-Certificate-Platform-with-QR-/)
 
-[![Deploy to Render](https://render.com/images/deploy-to-render.svg)](https://render.com/deploy?repo=https://github.com/Pravin-Khillare-coder/College-Event-management)
+[![Deploy to Render](https://render.com/images/deploy-to-render.svg)](https://render.com/deploy?repo=https://github.com/Pravin-Khillare-coder/UniCraft-An-Intelligent-College-Event-Management-Automated-Digital-Certificate-Platform-with-QR-)
 
 EventHub is a modern, responsive full-stack web application designed for organizing, registering, and managing college events (such as hackathons, fests, seminars, and workshops). It features automatic PDF certificate generation with scannable verification QR codes and serial numbers.
 
