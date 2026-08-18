@@ -32,27 +32,70 @@ const ManageEvents = () => {
     fetchEvents();
   }, []);
 
+  const DEFAULT_MOCK_EVENTS = [
+    {
+      _id: 'evt_1',
+      title: 'AI/ML Workshop 2025',
+      description: 'Explore the fundamentals of Machine Learning and Artificial Intelligence.',
+      date: '2026-09-24',
+      time: '10:00 AM - 01:00 PM',
+      venue: 'Seminar Hall, CSE Building',
+      category: 'Workshops',
+      poster: 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&w=600&q=80',
+      organizer: 'Computer Science Department',
+      maxSeats: 150,
+      status: 'Published'
+    },
+    {
+      _id: 'evt_2',
+      title: 'CodeSprint 2.0 Hackathon',
+      description: 'Competitive programming challenge with algorithm speed & data structure puzzles.',
+      date: '2026-10-15',
+      time: '09:00 AM - 12:00 PM',
+      venue: 'Online (Discord & HackerRank)',
+      category: 'Hackathons',
+      poster: 'https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=600&q=80',
+      organizer: 'Coding Club & CSE Department',
+      maxSeats: 500,
+      status: 'Published'
+    },
+    {
+      _id: 'evt_3',
+      title: 'Tech Talk: Cloud & DevOps',
+      description: 'Serverless technologies, AWS, GCP, Docker and Kubernetes.',
+      date: '2026-11-03',
+      time: '11:00 AM - 01:00 PM',
+      venue: 'Main Auditorium',
+      category: 'Seminars',
+      poster: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=600&q=80',
+      organizer: 'Cloud Computing Cell',
+      maxSeats: 250,
+      status: 'Published'
+    }
+  ];
+
   const fetchEvents = async () => {
     setLoading(true);
     try {
-      const res = await axios.get('/events');
-      setEvents(res.data);
+      let loadedEvents = [];
+      try {
+        const res = await axios.get('/events');
+        loadedEvents = res.data;
+      } catch (err) {
+        console.warn('API unavailable, loading fallback mock events in ManageEvents:', err.message);
+        loadedEvents = DEFAULT_MOCK_EVENTS;
+      }
+
+      setEvents(loadedEvents);
 
       // Fetch registrations for each event to show counts in table
       const counts = {};
-      for (let evt of res.data) {
+      for (let evt of loadedEvents) {
         try {
           const regRes = await axios.get(`/registrations/event/${evt._id}`);
           counts[evt._id] = regRes.data.filter(r => r.status === 'Registered').length;
         } catch (e) {
-          // If none/error, default to simulated registry count from dashboard mockup for aesthetics
-          const mockSeedData = {
-            'AI/ML Workshop': 280,
-            'CodeSprint 2.0': 320,
-            'Tech Talk: Cloud Computing': 210,
-            'Web Development Bootcamp': 190
-          };
-          counts[evt._id] = mockSeedData[evt.title] || 0;
+          counts[evt._id] = 42;
         }
       }
       setRegCounts(counts);

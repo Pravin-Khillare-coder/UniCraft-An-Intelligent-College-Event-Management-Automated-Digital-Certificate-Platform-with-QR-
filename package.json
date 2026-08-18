@@ -7,6 +7,8 @@
   "scripts": {
     "start": "node server.js",
     "build": "cd frontend && npm run build",
+    "predeploy": "npm run build",
+    "deploy": "npx gh-pages -d frontend/dist",
     "install-all": "npm run install-backend && npm run install-frontend",
     "install-backend": "cd backend && npm install",
     "install-frontend": "cd frontend && npm install --legacy-peer-deps",

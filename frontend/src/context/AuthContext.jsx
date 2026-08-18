@@ -297,11 +297,11 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       console.error('Login error:', error);
       
-      // If backend responded with 400/401 status, return error response message
-      if (error.response && error.response.status >= 400 && error.response.status < 500) {
+      // If backend responded with a valid 400/401 JSON error message, return it
+      if (error.response && (error.response.status === 400 || error.response.status === 401) && error.response.data && typeof error.response.data === 'object' && error.response.data.message) {
         return {
           success: false,
-          message: error.response?.data?.message || 'Invalid email or password'
+          message: error.response.data.message
         };
       }
 
@@ -359,10 +359,10 @@ export const AuthProvider = ({ children }) => {
       return { success: true };
     } catch (error) {
       console.error('Signup error:', error);
-      if (error.response && error.response.status >= 400 && error.response.status < 500) {
+      if (error.response && (error.response.status === 400 || error.response.status === 409) && error.response.data && typeof error.response.data === 'object' && error.response.data.message) {
         return {
           success: false,
-          message: error.response?.data?.message || 'Error creating account. Try again.'
+          message: error.response.data.message
         };
       }
 
@@ -413,10 +413,10 @@ export const AuthProvider = ({ children }) => {
       return { success: true };
     } catch (error) {
       console.error('Google login error:', error);
-      if (error.response && error.response.status >= 400 && error.response.status < 500) {
+      if (error.response && (error.response.status === 400 || error.response.status === 401) && error.response.data && typeof error.response.data === 'object' && error.response.data.message) {
         return {
           success: false,
-          message: error.response?.data?.message || 'Google Auth failed'
+          message: error.response.data.message
         };
       }
 

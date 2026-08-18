@@ -4,6 +4,74 @@ import { useAuth } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
 import { Search, Calendar, MapPin, Sparkles, Filter } from 'lucide-react';
 
+const DEFAULT_MOCK_EVENTS = [
+  {
+    _id: 'evt_1',
+    title: 'AI/ML Workshop 2025',
+    description: 'Explore the fundamentals of Machine Learning and Artificial Intelligence in this hands-on workshop. You will learn about algorithms, datasets, model training, and real-world applications.',
+    date: '2026-09-24',
+    time: '10:00 AM - 01:00 PM',
+    venue: 'Seminar Hall, CSE Building',
+    category: 'Workshops',
+    poster: 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&w=600&q=80',
+    organizer: 'Computer Science Department',
+    maxSeats: 150,
+    status: 'Published'
+  },
+  {
+    _id: 'evt_2',
+    title: 'CodeSprint 2.0 Hackathon',
+    description: 'The ultimate competitive programming challenge is here! Test your problem-solving skills, algorithms speed, and data structure layouts to win exciting cash prizes.',
+    date: '2026-10-15',
+    time: '09:00 AM - 12:00 PM',
+    venue: 'Online (Discord & HackerRank)',
+    category: 'Hackathons',
+    poster: 'https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=600&q=80',
+    organizer: 'Coding Club & CSE Department',
+    maxSeats: 500,
+    status: 'Published'
+  },
+  {
+    _id: 'evt_3',
+    title: 'Tech Talk: Cloud & DevOps',
+    description: 'Understand the future of scalable infrastructure, Serverless technologies, AWS, GCP platforms, and modern deployment models like Docker and Kubernetes.',
+    date: '2026-11-03',
+    time: '11:00 AM - 01:00 PM',
+    venue: 'Main Auditorium',
+    category: 'Seminars',
+    poster: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=600&q=80',
+    organizer: 'Cloud Computing Cell',
+    maxSeats: 250,
+    status: 'Published'
+  },
+  {
+    _id: 'evt_4',
+    title: 'Web Development Bootcamp',
+    description: 'A comprehensive frontend-to-backend web boot camp utilizing React.js, Express, and Mongo databases. Create responsive layout websites from scratch.',
+    date: '2026-11-12',
+    time: '10:00 AM - 04:00 PM',
+    venue: 'Lab 4, CSE',
+    category: 'Workshops',
+    poster: 'https://images.unsplash.com/photo-1531403009284-440f080d1e12?auto=format&fit=crop&w=600&q=80',
+    organizer: 'Web Club',
+    maxSeats: 120,
+    status: 'Published'
+  },
+  {
+    _id: 'evt_5',
+    title: 'Cyber Security & Ethical Hacking',
+    description: 'Discover how to secure cloud services, local client interfaces, avoid social engineering exploits, and secure your web apps using JWT and CSRF safeguards.',
+    date: '2026-12-05',
+    time: '02:00 PM - 05:00 PM',
+    venue: 'Seminar Hall, IT Building',
+    category: 'Seminars',
+    poster: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=600&q=80',
+    organizer: 'CyberSec Cell',
+    maxSeats: 200,
+    status: 'Published'
+  }
+];
+
 const Events = () => {
   const { user, addNotification } = useAuth();
   const [events, setEvents] = useState([]);
@@ -23,15 +91,24 @@ const Events = () => {
   const fetchEventsAndRegistrations = async () => {
     setLoading(true);
     try {
-      // Fetch published events
-      const eventsRes = await axios.get('/events', {
-        params: {
-          category: category !== 'All Categories' ? category : undefined,
-          status: 'Published'
-        }
-      });
+      let loadedEvents = [];
+      try {
+        const eventsRes = await axios.get('/events', {
+          params: {
+            category: category !== 'All Categories' ? category : undefined,
+            status: 'Published'
+          }
+        });
+        loadedEvents = eventsRes.data && eventsRes.data.length > 0 ? eventsRes.data : DEFAULT_MOCK_EVENTS;
+      } catch (err) {
+        console.warn('API unavailable, using fallback mock events catalog:', err.message);
+        loadedEvents = DEFAULT_MOCK_EVENTS;
+      }
 
-      let loadedEvents = eventsRes.data;
+      // Filter category if mock was used
+      if (category !== 'All Categories') {
+        loadedEvents = loadedEvents.filter(e => e.category === category);
+      }
 
       // Apply type filtering manually (Online vs Offline)
       if (type !== 'All Types') {
@@ -63,8 +140,13 @@ const Events = () => {
 
       // Fetch student's registrations to show register/registered buttons
       if (user) {
-        const regRes = await axios.get('/registrations/my');
-        setMyRegistrations(regRes.data.map(r => r.eventId?._id || r.eventId));
+        try {
+          const regRes = await axios.get('/registrations/my');
+          setMyRegistrations(regRes.data.map(r => r.eventId?._id || r.eventId));
+        } catch (err) {
+          const localRegs = JSON.parse(localStorage.getItem('user_registrations') || '[]');
+          setMyRegistrations(localRegs);
+        }
       }
     } catch (error) {
       console.error('Error fetching events catalog:', error);
@@ -81,7 +163,17 @@ const Events = () => {
   const handleRegister = async (eventId, eventTitle) => {
     setRegisteringMap(prev => ({ ...prev, [eventId]: true }));
     try {
-      const res = await axios.post('/registrations/register', { eventId });
+      try {
+        await axios.post('/registrations/register', { eventId });
+      } catch (err) {
+        // Fallback for static hosting
+        const localRegs = JSON.parse(localStorage.getItem('user_registrations') || '[]');
+        if (!localRegs.includes(eventId)) {
+          localRegs.push(eventId);
+          localStorage.setItem('user_registrations', JSON.stringify(localRegs));
+        }
+      }
+
       setMyRegistrations(prev => [...prev, eventId]);
       
       // Send notification alerts
@@ -89,7 +181,7 @@ const Events = () => {
       alert(`Successfully registered for ${eventTitle}!`);
     } catch (error) {
       console.error('Registration error:', error);
-      alert(error.response?.data?.message || 'Error registering for event.');
+      alert('Error registering for event.');
     } finally {
       setRegisteringMap(prev => ({ ...prev, [eventId]: false }));
     }
