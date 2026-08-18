@@ -96,25 +96,28 @@ const Login = () => {
 
         <div className="flex items-center gap-3 z-10">
           <div className="w-10 h-10 bg-gradient-to-tr from-primary to-indigo-400 rounded-xl flex items-center justify-center font-bold text-white text-xl">
-            E
+            U
           </div>
           <div>
-            <h1 className="font-bold text-lg tracking-wider text-white">EventHub</h1>
-            <span className="text-[10px] uppercase tracking-widest text-slate-400">College Platform</span>
+            <h1 className="font-bold text-lg tracking-wider text-white">UniCraft</h1>
+            <span className="text-[10px] uppercase tracking-widest text-slate-400">College Portal</span>
           </div>
         </div>
 
         <div className="my-auto max-w-md space-y-5 z-10">
           <h2 className="text-4xl font-extrabold leading-tight tracking-tight text-white">
-            Connect, Collaborate, and Elevate Your Experience.
+            UniCraft
           </h2>
+          <p className="text-lg font-bold text-indigo-200">
+            College Event Management & Student Engagement Platform
+          </p>
           <p className="text-slate-300 text-sm leading-relaxed">
-            Discover tech events, seminars, sports competitions, and cultural fests. Earn participation achievements and instantly verify your certificate credentials.
+            Discover tech events, hackathons, seminars, and workshops. Register seamlessly, earn achievement badges, and download verified digital certificates.
           </p>
         </div>
 
         <div className="z-10 flex gap-4 text-xs text-slate-400 border-t border-slate-800 pt-6">
-          <span>© 2026 EventHub Inc.</span>
+          <span>© 2026 UniCraft Inc.</span>
           <span>•</span>
           <span>Privacy Policy</span>
           <span>•</span>
@@ -128,7 +131,7 @@ const Login = () => {
           {/* Header */}
           <div className="text-center md:text-left">
             <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-800 tracking-tight">
-              {isLogin ? 'Sign In to Portal' : 'Create Student Account'}
+              {isLogin ? 'Sign In to UniCraft Portal' : 'Create Student Account'}
             </h3>
             <p className="text-slate-400 text-sm mt-2 font-medium">
               {isLogin 
